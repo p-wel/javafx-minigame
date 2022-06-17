@@ -16,8 +16,8 @@ public class GameButton extends Button {
 //    private final String BUTTON_PRESSED_STYLE = "-fx-background-color: transparent; -fx-background-image: url(../../resources/yellow_button13.png)";
 //    private final String BUTTON_FREE_STYLE = "-fx-background-color: transparent; -fx-background-image: url(../../resources/yellow_button00.png)";
 
-    private final String BUTTON_PRESSED_STYLE = "-fx-background-color: transparent; -fx-background-image: url(../../resources/yellow_button13.png)";
-    private final String BUTTON_FREE_STYLE = "-fx-background-color: transparent; -fx-background-image: url(../../resources/yellow_button00.png)";
+    private final String BUTTON_PRESSED_STYLE = "-fx-background-color: transparent; -fx-background-image: url('yellow_button13.png')";
+    private final String BUTTON_FREE_STYLE = "-fx-background-color: transparent; -fx-background-image: url('yellow_button00.png')";
 
     public GameButton(String text) {
         setText(text);
