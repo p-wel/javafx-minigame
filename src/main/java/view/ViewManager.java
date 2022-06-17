@@ -136,8 +136,8 @@ public class ViewManager {
         exitButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                showSubMenu(exitSubMenu);
-//                mainStage.close();
+//                showSubMenu(exitSubMenu);
+                mainStage.close();
             }
         });
     }
@@ -146,6 +146,15 @@ public class ViewManager {
         MenuButton easyButton = new MenuButton("EASY");
         easyButton.setLayoutX(60);
         easyButton.setLayoutY(25);
+
+        easyButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                GameViewManager gameManager = new GameViewManager();
+                gameManager.createNewGame(mainStage, 1);
+            }
+        });
+
         return easyButton;
     }
 
@@ -153,6 +162,15 @@ public class ViewManager {
         MenuButton mediumButton = new MenuButton("MEDIUM");
         mediumButton.setLayoutX(60);
         mediumButton.setLayoutY(25+mediumButton.getPrefHeight());
+
+        mediumButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                GameViewManager gameManager = new GameViewManager();
+                gameManager.createNewGame(mainStage, 2);
+            }
+        });
+
         return mediumButton;
     }
 
@@ -160,6 +178,15 @@ public class ViewManager {
         MenuButton hardButton = new MenuButton("HARD");
         hardButton.setLayoutX(60);
         hardButton.setLayoutY(25+hardButton.getPrefHeight()*2);
+
+        hardButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                GameViewManager gameManager = new GameViewManager();
+                gameManager.createNewGame(mainStage, 3);
+            }
+        });
+
         return hardButton;
     }
 
