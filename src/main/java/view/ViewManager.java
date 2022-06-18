@@ -150,8 +150,8 @@ public class ViewManager {
         easyButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                GameViewManager gameManager = new GameViewManager();
-                gameManager.createNewGame(mainStage, 1);
+                GameViewManager gameManager = new GameViewManager(1);
+                gameManager.createNewGame(mainStage);
             }
         });
 
@@ -166,8 +166,8 @@ public class ViewManager {
         mediumButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                GameViewManager gameManager = new GameViewManager();
-                gameManager.createNewGame(mainStage, 2);
+                GameViewManager gameManager = new GameViewManager(2);
+                gameManager.createNewGame(mainStage);
             }
         });
 
@@ -182,8 +182,8 @@ public class ViewManager {
         hardButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                GameViewManager gameManager = new GameViewManager();
-                gameManager.createNewGame(mainStage, 3);
+                GameViewManager gameManager = new GameViewManager(3);
+                gameManager.createNewGame(mainStage);
             }
         });
 

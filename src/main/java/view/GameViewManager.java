@@ -8,12 +8,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
-import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import model.Bucket;
 
 import java.util.Random;
@@ -30,10 +25,10 @@ public class GameViewManager {
     public static final int SCREEN_HEIGHT = 290;
     public static final int PLAYGROUND_WIDTH = 190;
     public static final int PLAYGROUND_HEIGHT = 210;
-    public static final int CHICKEN_WIDTH = 40;
+    public static final int CHICKEN_WIDTH = 50;
 
     public static final int SCREEN_X_START = 260;
-    public static final int SCREEN_X_END = 700;
+    public static final int SCREEN_X_END = 720;
     public static final int SCREEN_Y_START = 160;
     public static final int SCREEN_Y_END = 430;
 
@@ -41,18 +36,18 @@ public class GameViewManager {
 
     private static final int CHICKEN_1_X = SCREEN_X_START + CHICKEN_WIDTH;
     private static final int CHICKEN_1_Y = 240;
-    private static final int CHICKEN_2_X = SCREEN_X_END - CHICKEN_WIDTH;
-    private static final int CHICKEN_2_Y = 240;
-    private static final int CHICKEN_3_X = SCREEN_X_START + CHICKEN_WIDTH;
-    private static final int CHICKEN_3_Y = 300;
-    private static final int CHICKEN_4_X = SCREEN_X_END - CHICKEN_WIDTH;
+    private static final int CHICKEN_2_X = SCREEN_X_START + CHICKEN_WIDTH;
+    private static final int CHICKEN_2_Y = 310;
+    private static final int CHICKEN_3_X = SCREEN_X_END;
+    private static final int CHICKEN_3_Y = 240;
+    private static final int CHICKEN_4_X = SCREEN_X_END;
     private static final int CHICKEN_4_Y = 300;
 
 
     private Stage menuStage;
     private Bucket bucket;
     private int angle;
-    private int difficulty;
+    private final int difficulty;
     private boolean isLeftKeyPressed;
     private boolean isRightKeyPressed;
     private boolean isUpKeyPressed;
@@ -64,11 +59,12 @@ public class GameViewManager {
     private ImageView[] eggs;
     private Random randomPosition = new Random();
 
-    public GameViewManager() {
+    public GameViewManager(int difficulty) {
+        this.difficulty = difficulty;
         initStage();
         createBackground();
         createBucket();
-        createGameElements();
+        createEggs();
         createKeyListeners();
         randomPosition = new Random();
     }
@@ -126,60 +122,60 @@ public class GameViewManager {
         gameStage.setScene(gameScene);
     }
 
-    public void createNewGame(Stage menuStage, int difficulty) {
+    public void createNewGame(Stage menuStage) {
         this.menuStage = menuStage;
-        this.difficulty = difficulty;
         this.menuStage.hide();
         createGameLoop();
         gameStage.show();
     }
 
-    public void createGameElements() {
-        eggs = new ImageView[3];
+    public void createEggs() {
+        eggs = new ImageView[this.difficulty];
+
         for (int i = 0; i < eggs.length; i++) {
             eggs[i] = new ImageView(EGG_IMAGE);
-            setNewElementPosition(eggs[i]);
+            setEggStartingPosition(eggs[i]);
             gamePane.getChildren().add(eggs[i]);
         }
     }
 
-    private void setNewElementPosition(ImageView image) {
+    private void setEggStartingPosition(ImageView image) {
         int randomChicken = randomPosition.nextInt(4) + 1;
-        System.out.println(randomChicken);
-
         switch (randomChicken) {
-            case 1:
+            case 1 -> {
                 image.setLayoutX(CHICKEN_1_X);
                 image.setLayoutY(CHICKEN_1_Y);
-                break;
-            case 2:
+            }
+            case 2 -> {
                 image.setLayoutX(CHICKEN_2_X);
                 image.setLayoutY(CHICKEN_2_Y);
-                break;
-            case 3:
+            }
+            case 3 -> {
                 image.setLayoutX(CHICKEN_3_X);
                 image.setLayoutY(CHICKEN_3_Y);
-                break;
-            case 4:
+            }
+            case 4 -> {
                 image.setLayoutX(CHICKEN_4_X);
                 image.setLayoutY(CHICKEN_4_Y);
-                break;
-            default:
-                System.out.println("Error in setNewElementPosition() randomChicken number (out of 1-4 range)");
+            }
+            default -> {
+                System.out.println("Error in randomChicken number (out of 1-4 range)");
                 image.setLayoutX(CHICKEN_1_X);
                 image.setLayoutY(CHICKEN_1_Y);
-                break;
+            }
         }
     }
 
-    private void moveEggs() {
-        for (int i = 0; i < eggs.length; i++) {
-            eggs[i].setLayoutY(eggs[i].getLayoutY() + 1);
-            eggs[i].setRotate(eggs[i].getRotate() + 7);
-        }
 
+    /**
+     * Try of creating Ellipse object with PathTransition and RotateTransition
+     */
+//    public void createEggsElipse() {
 //        Ellipse egg = new Ellipse(10, 20);
 //        egg.getStyleClass().add("style.css");
+//        setNewEggPosition(egg);
+//        gamePane.getChildren().add(egg);
+//    }
 //
 //        PathTransition pathTransition = new PathTransition(Duration.seconds(5), egg);
 //        Path path = new Path();
@@ -196,12 +192,91 @@ public class GameViewManager {
 //        parallelTransition.getChildren().addAll(rotateTransition, pathTransition);
 //        parallelTransition.setCycleCount(Animation.INDEFINITE);
 //        parallelTransition.play();
+//
+//    private void setEggStartingPosition(Ellipse egg) {
+//        int randomChicken = randomPosition.nextInt(4) + 1;
+//        System.out.println(randomChicken);
+//
+//        switch (randomChicken) {
+//            case 1 -> {
+//                image.setLayoutX(CHICKEN_1_X);
+//                image.setLayoutY(CHICKEN_1_Y);
+//            }
+//            case 2 -> {
+//                image.setLayoutX(CHICKEN_2_X);
+//                image.setLayoutY(CHICKEN_2_Y);
+//            }
+//            case 3 -> {
+//                image.setLayoutX(CHICKEN_3_X);
+//                image.setLayoutY(CHICKEN_3_Y);
+//            }
+//            case 4 -> {
+//                image.setLayoutX(CHICKEN_4_X);
+//                image.setLayoutY(CHICKEN_4_Y);
+//            }
+//            default -> {
+//                System.out.println("Error in randomChicken position number (out of 1-4 range)");
+//                image.setLayoutX(CHICKEN_1_X);
+//                image.setLayoutY(CHICKEN_1_Y);
+//            }
+//    }
+//
+//    private void moveEggs() {
+//        for (int i = 0; i < eggs.length; i++) {
+//            eggs[i].setLayoutY(eggs[i].getLayoutY() + 1);
+//            eggs[i].setRotate(eggs[i].getRotate() + 7);
+//        }
+    private void moveEggs() {
+        for (ImageView egg : eggs) {
+            if (egg.getLayoutX() < GAME_WIDTH / 2) {
+                moveLeftSideEggs(egg);
+            } else {
+                moveRightSideEggs(egg);
+
+            }
+        }
     }
 
-    private void checkIfElementAreBehindAndRelocate() {
-        for (int i = 0; i < eggs.length; i++) {
-            if (eggs[i].getLayoutY() > SCREEN_Y_END) {
-                setNewElementPosition(eggs[i]);
+    private void moveLeftSideEggs(ImageView egg) {
+        if (egg.getLayoutX() > SCREEN_X_START + CHICKEN_WIDTH + 50) {
+            // FALL ->
+            egg.setLayoutX(egg.getLayoutX() + 0.4);
+            egg.setLayoutY(egg.getLayoutY() + 0.45);
+            egg.setRotate(egg.getRotate() + 2);
+        } else if (egg.getLayoutX() > SCREEN_X_START + CHICKEN_WIDTH + 10) {
+            // ROLL SLOPE ->
+            egg.setLayoutX(egg.getLayoutX() + 0.5);
+            egg.setLayoutY(egg.getLayoutY() + 0.4);
+            egg.setRotate(egg.getRotate() + 5);
+        } else {
+            // ROLL FLAT ->
+            egg.setLayoutX(egg.getLayoutX() + 0.2);
+            egg.setRotate(egg.getRotate() + 1);
+        }
+    }
+
+    private void moveRightSideEggs(ImageView egg) {
+        if (egg.getLayoutX() < SCREEN_X_END - CHICKEN_WIDTH - 30) {
+            // FALL <-
+            egg.setLayoutX(egg.getLayoutX() - 0.4);
+            egg.setLayoutY(egg.getLayoutY() + 0.45);
+            egg.setRotate(egg.getRotate() - 2);
+        } else if (egg.getLayoutX() < SCREEN_X_END - CHICKEN_WIDTH +15){
+            // ROLL SLOPE <-
+            egg.setLayoutX(egg.getLayoutX() - 0.5);
+            egg.setLayoutY(egg.getLayoutY() + 0.4);
+            egg.setRotate(egg.getRotate() - 5);
+        }else{
+            // ROLL FLAT <-
+            egg.setLayoutX(egg.getLayoutX() - 0.2);
+            egg.setRotate(egg.getRotate() - 1);
+        }
+    }
+
+    private void checkEggIfBroken() {
+        for (ImageView egg : eggs) {
+            if (egg.getLayoutY() > SCREEN_Y_END) {
+                setEggStartingPosition(egg);
             }
         }
     }
@@ -218,7 +293,7 @@ public class GameViewManager {
             @Override
             public void handle(long l) {
                 moveEggs();
-                checkIfElementAreBehindAndRelocate();
+                checkEggIfBroken();
                 moveBucket();
             }
         };
