@@ -6,14 +6,18 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import model.Bucket;
+import model.GameLabel;
+import model.GameOver;
 
 import java.util.Random;
 
-public class GameViewManager {
+public class GameView {
 
     private AnchorPane gamePane;
     private Scene gameScene;
@@ -33,20 +37,19 @@ public class GameViewManager {
     public static final int SCREEN_Y_END = 430;
 
     private static final int BUCKET_SPEED = 4;
-    private static final int BUCKET_HEIGHT = Bucket.getHEIGHT()-30;
-    private static final int BUCKET_WIDTH = Bucket.getWIDTH()-30;
+    private static final int BUCKET_HEIGHT = Bucket.getHEIGHT() - 30;
+    private static final int BUCKET_WIDTH = Bucket.getWIDTH() - 30;
     private static final int EGG_SIZE = 16;
 
     private static final int CHICKEN_1_X = SCREEN_X_START + CHICKEN_WIDTH;
     private static final int CHICKEN_1_Y = 240;
     private static final int CHICKEN_2_X = SCREEN_X_START + CHICKEN_WIDTH;
     private static final int CHICKEN_2_Y = 310;
-    private static final int CHICKEN_3_X = SCREEN_X_END-30;
+    private static final int CHICKEN_3_X = SCREEN_X_END - 30;
     private static final int CHICKEN_3_Y = 240;
-    private static final int CHICKEN_4_X = SCREEN_X_END-30;
+    private static final int CHICKEN_4_X = SCREEN_X_END - 30;
     private static final int CHICKEN_4_Y = 300;
 
-    private Stage menuStage;
     private Bucket bucket;
     private int angle;
     private final int difficulty;
@@ -68,7 +71,7 @@ public class GameViewManager {
 
     private Random randomPosition = new Random();
 
-    public GameViewManager(int difficulty) {
+    public GameView(int difficulty) {
         this.difficulty = difficulty;
         initStage();
         createBackground();
@@ -123,6 +126,21 @@ public class GameViewManager {
                 }
             }
         });
+
+        gameScene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            public void handle(KeyEvent keyEvent) {
+                KeyCombination keyComb = new KeyCodeCombination(
+                        KeyCode.Q,
+                        KeyCombination.SHIFT_ANY,
+                        KeyCombination.CONTROL_ANY);
+                if (keyComb.match(keyEvent)) {
+                    gameTimer.stop();
+                    gameStage.close();
+                    MenuView.mainStage.show();
+                    keyEvent.consume();
+                }
+            }
+        });
     }
 
     private void initStage() {
@@ -130,11 +148,12 @@ public class GameViewManager {
         gameScene = new Scene(gamePane, GAME_WIDTH, GAME_HEIGHT);
         gameStage = new Stage();
         gameStage.setScene(gameScene);
+        gameStage.setResizable(false);
+        gameStage.setTitle("Mickey Mouse - Game");
     }
 
     public void createNewGame(Stage menuStage) {
-        this.menuStage = menuStage;
-        this.menuStage.hide();
+        menuStage.hide();
         createGameLoop();
         gameStage.show();
     }
@@ -156,14 +175,14 @@ public class GameViewManager {
         pointsLabel.setLayoutY(SCREEN_Y_END - 20);
         gamePane.getChildren().add(pointsLabel);
 
-        playerLifes = 3;
-        lifes = new ImageView[3];
+        playerLifes = 4;
+        lifes = new ImageView[4];
 
         for (int i = 0; i < lifes.length; i++) {
             lifes[i] = new ImageView(HEART_IMAGE);
             lifes[i].setFitWidth(20);
             lifes[i].setFitHeight(20);
-            lifes[i].setLayoutX(SCREEN_X_END - 50 + (i * 20));
+            lifes[i].setLayoutX(SCREEN_X_END - 70 + (i * 20));
             lifes[i].setLayoutY(SCREEN_Y_START + 10);
             gamePane.getChildren().add(lifes[i]);
         }
@@ -173,21 +192,22 @@ public class GameViewManager {
 
     private void setEggStartingPosition(ImageView image) {
         int randomChicken = randomPosition.nextInt(4) + 1;
+        int random = new Random().nextInt(5);
         switch (randomChicken) {
             case 1 -> {
-                image.setLayoutX(CHICKEN_1_X);
+                image.setLayoutX(CHICKEN_1_X+random);
                 image.setLayoutY(CHICKEN_1_Y);
             }
             case 2 -> {
-                image.setLayoutX(CHICKEN_2_X);
+                image.setLayoutX(CHICKEN_2_X+random);
                 image.setLayoutY(CHICKEN_2_Y);
             }
             case 3 -> {
-                image.setLayoutX(CHICKEN_3_X);
+                image.setLayoutX(CHICKEN_3_X+random);
                 image.setLayoutY(CHICKEN_3_Y);
             }
             case 4 -> {
-                image.setLayoutX(CHICKEN_4_X);
+                image.setLayoutX(CHICKEN_4_X+random);
                 image.setLayoutY(CHICKEN_4_Y);
             }
             default -> {
@@ -344,9 +364,9 @@ public class GameViewManager {
     private void checkIfEggCatched() {
         for (int i = 0; i < eggs.length; i++) {
             if (EGG_SIZE + BUCKET_HEIGHT > calculateDistance(
-                    bucket.getLayoutX()+BUCKET_WIDTH/2,
+                    bucket.getLayoutX() + BUCKET_WIDTH / 2,
                     eggs[i].getLayoutX(),
-                    bucket.getLayoutY()+BUCKET_HEIGHT/2,
+                    bucket.getLayoutY() + BUCKET_HEIGHT / 2,
                     eggs[i].getLayoutY())
             ) {
                 pointsLabel.setText(String.valueOf(++playerPoints));
@@ -356,13 +376,12 @@ public class GameViewManager {
     }
 
     private void loseLife() {
-        gamePane.getChildren().remove(lifes[playerLifes-1]);
+        gamePane.getChildren().remove(lifes[playerLifes - 1]);
         playerLifes--;
         System.out.println(playerLifes);
         if (playerLifes <= 0) {
-            gameStage.close();
             gameTimer.stop();
-            menuStage.show();
+            new GameOver(gameStage, playerPoints);
         }
     }
 

@@ -5,49 +5,49 @@ import javafx.animation.Transition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import model.MenuButton;
-import model.MenuLabel;
-import model.SubMenu;
+import model.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
-public class ViewManager {
+public class MenuView {
 
     public static final int FRAME_WIDTH = 1000;
     public static final int FRAME_HEIGHT = 600;
     private AnchorPane mainPane;
     private Scene mainScene;
-    private Stage mainStage;
+    public static Stage mainStage;
 
     private final static int MENU_BUTTONS_START_X = 405;
     private final static int MENU_BUTTONS_START_Y = 225;
     private final String FONT_PATH = "src/main/resources/kenvector_future.ttf";
 
     private SubMenu playSubMenu;
-    private SubMenu highScoresSubMenu;
-    private SubMenu exitSubMenu;
-
     private SubMenu subMenuToHide = new SubMenu();
-
     List<MenuButton> menuButtons;
 
-    public ViewManager() {
+    public MenuView() {
         menuButtons = new ArrayList<>();
         mainPane = new AnchorPane();
         mainScene = new Scene(mainPane, FRAME_WIDTH, FRAME_HEIGHT);
         mainStage = new Stage();
         mainStage.setScene(mainScene);
+        mainStage.setResizable(false);
+        mainStage.setTitle("Mickey Mouse - Menu");
 
-        createSubMenus();
+        createPlaySubMenu();
         createButtons();
         createBackground();
         createLogo();
@@ -56,21 +56,11 @@ public class ViewManager {
 
     private void showSubMenu(SubMenu subMenu) {
         if (subMenu != null) {
+            subMenuToHide = playSubMenu;
             subMenuToHide.moveSubMenu();
             subMenu.moveSubMenu();
             subMenuToHide = subMenu;
         }
-    }
-
-    private void createSubMenus() {
-        highScoresSubMenu = new SubMenu();
-        exitSubMenu = new SubMenu();
-
-        mainPane.getChildren().add(highScoresSubMenu);
-        mainPane.getChildren().add(exitSubMenu);
-
-        createPlaySubMenu();
-
     }
 
     private void createPlaySubMenu() {
@@ -78,15 +68,13 @@ public class ViewManager {
         mainPane.getChildren().add(playSubMenu);
 
         MenuLabel labelDifficulty = new MenuLabel("Choose difficulty");
-        labelDifficulty.setLayoutX(playSubMenu.getWidth() / 2 - labelDifficulty.getPrefWidth()/2 +15);
+        labelDifficulty.setLayoutX(playSubMenu.getWidth() / 2 - labelDifficulty.getPrefWidth() / 2 + 15);
         labelDifficulty.setLayoutY(5);
         playSubMenu.getPane().getChildren().add(labelDifficulty);
         playSubMenu.getPane().getChildren().add(createEasyButton());
         playSubMenu.getPane().getChildren().add(createMediumButton());
         playSubMenu.getPane().getChildren().add(createHardButton());
-
     }
-
 
     public Stage getMainStage() {
         return mainStage;
@@ -113,6 +101,9 @@ public class ViewManager {
             @Override
             public void handle(ActionEvent actionEvent) {
                 showSubMenu(playSubMenu);
+                if (playSubMenu == subMenuToHide){
+                    playSubMenu.moveSubMenu();
+                }
             }
         });
     }
@@ -124,7 +115,9 @@ public class ViewManager {
         highScoresButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                showSubMenu(highScoresSubMenu);
+                HighScoresTable table = new HighScoresTable();
+                mainStage.hide();
+                table.start(new Stage());
             }
         });
     }
@@ -136,8 +129,13 @@ public class ViewManager {
         exitButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-//                showSubMenu(exitSubMenu);
-                mainStage.close();
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setHeaderText(null);
+                alert.setTitle("Exit");
+                alert.setContentText("Are you sure?");
+                if (Objects.equals(alert.showAndWait(), Optional.of(ButtonType.OK))) {
+                    mainStage.close();
+                }
             }
         });
     }
@@ -150,8 +148,8 @@ public class ViewManager {
         easyButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                GameViewManager gameManager = new GameViewManager(1);
-                gameManager.createNewGame(mainStage);
+                GameView gameView = new GameView(1);
+                gameView.createNewGame(mainStage);
             }
         });
 
@@ -161,13 +159,13 @@ public class ViewManager {
     private MenuButton createMediumButton() {
         MenuButton mediumButton = new MenuButton("MEDIUM");
         mediumButton.setLayoutX(60);
-        mediumButton.setLayoutY(25+mediumButton.getPrefHeight());
+        mediumButton.setLayoutY(25 + mediumButton.getPrefHeight());
 
         mediumButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                GameViewManager gameManager = new GameViewManager(2);
-                gameManager.createNewGame(mainStage);
+                GameView gameView = new GameView(2);
+                gameView.createNewGame(mainStage);
             }
         });
 
@@ -177,13 +175,13 @@ public class ViewManager {
     private MenuButton createHardButton() {
         MenuButton hardButton = new MenuButton("HARD");
         hardButton.setLayoutX(60);
-        hardButton.setLayoutY(25+hardButton.getPrefHeight()*2);
+        hardButton.setLayoutY(25 + hardButton.getPrefHeight() * 2);
 
         hardButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                GameViewManager gameManager = new GameViewManager(3);
-                gameManager.createNewGame(mainStage);
+                GameView gameView = new GameView(3);
+                gameView.createNewGame(mainStage);
             }
         });
 
@@ -217,5 +215,4 @@ public class ViewManager {
         animation.play();
         mainPane.getChildren().add(text);
     }
-
 }

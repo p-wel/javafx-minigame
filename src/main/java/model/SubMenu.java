@@ -5,12 +5,12 @@ import javafx.scene.SubScene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.util.Duration;
-import view.ViewManager;
+import view.MenuView;
 
 public class SubMenu extends SubScene {
 
-    private static final int FRAME_WIDTH = ViewManager.FRAME_WIDTH;
-    private static final int FRAME_HEIGHT = ViewManager.FRAME_HEIGHT;
+    private static final int FRAME_WIDTH = MenuView.FRAME_WIDTH;
+    private static final int FRAME_HEIGHT = MenuView.FRAME_HEIGHT;
     private static final int SUB_MENU_WIDTH = 190;
     private static final int SUB_MENU_HEIGHT = 180;
 
@@ -58,11 +58,9 @@ public class SubMenu extends SubScene {
         transition.setNode(this);
 
         if (isHidden) {
-//        transition.setToY(-FRAME_HEIGHT/2 -90);
             transition.setToY(-180);
             isHidden = false;
         } else {
-//            transition.setToY(FRAME_HEIGHT / 2 + 90);
             transition.setToY(180);
             isHidden = true;
         }

@@ -1,17 +1,17 @@
-package application;
+package app;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
-import view.ViewManager;
+import view.MenuView;
 
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage stage) {
         try {
-            ViewManager manager = new ViewManager();
-            primaryStage = manager.getMainStage();
-            primaryStage.show();
+            MenuView menuView = new MenuView();
+            stage = menuView.getMainStage();
+            stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
