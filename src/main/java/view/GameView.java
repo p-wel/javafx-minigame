@@ -6,19 +6,18 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
-import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.LineTo;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import model.Bucket;
+import model.GameLabel;
+import model.GameOver;
 
 import java.util.Random;
 
-public class GameViewManager {
+public class GameView {
 
     private AnchorPane gamePane;
     private Scene gameScene;
@@ -30,45 +29,55 @@ public class GameViewManager {
     public static final int SCREEN_HEIGHT = 290;
     public static final int PLAYGROUND_WIDTH = 190;
     public static final int PLAYGROUND_HEIGHT = 210;
-    public static final int CHICKEN_WIDTH = 40;
+    public static final int CHICKEN_WIDTH = 50;
 
     public static final int SCREEN_X_START = 260;
-    public static final int SCREEN_X_END = 700;
+    public static final int SCREEN_X_END = 720;
     public static final int SCREEN_Y_START = 160;
     public static final int SCREEN_Y_END = 430;
 
     private static final int BUCKET_SPEED = 4;
+    private static final int BUCKET_HEIGHT = Bucket.getHEIGHT() - 30;
+    private static final int BUCKET_WIDTH = Bucket.getWIDTH() - 30;
+    private static final int EGG_SIZE = 16;
 
     private static final int CHICKEN_1_X = SCREEN_X_START + CHICKEN_WIDTH;
     private static final int CHICKEN_1_Y = 240;
-    private static final int CHICKEN_2_X = SCREEN_X_END - CHICKEN_WIDTH;
-    private static final int CHICKEN_2_Y = 240;
-    private static final int CHICKEN_3_X = SCREEN_X_START + CHICKEN_WIDTH;
-    private static final int CHICKEN_3_Y = 300;
-    private static final int CHICKEN_4_X = SCREEN_X_END - CHICKEN_WIDTH;
+    private static final int CHICKEN_2_X = SCREEN_X_START + CHICKEN_WIDTH;
+    private static final int CHICKEN_2_Y = 310;
+    private static final int CHICKEN_3_X = SCREEN_X_END - 30;
+    private static final int CHICKEN_3_Y = 240;
+    private static final int CHICKEN_4_X = SCREEN_X_END - 30;
     private static final int CHICKEN_4_Y = 300;
 
-
-    private Stage menuStage;
     private Bucket bucket;
     private int angle;
-    private int difficulty;
+    private final int difficulty;
     private boolean isLeftKeyPressed;
     private boolean isRightKeyPressed;
     private boolean isUpKeyPressed;
     private boolean isDownKeyPressed;
     private AnimationTimer gameTimer;
 
-    private final static String EGG_IMAGE = "egg16px.png";
+    private final static String EGG_IMAGE = "egg.png";
 
+    private GameLabel pointsLabel;
+    private ImageView[] lifes;
     private ImageView[] eggs;
+    private int playerLifes;
+    private int playerPoints;
+
+    private final static String HEART_IMAGE = "heart.png";
+
     private Random randomPosition = new Random();
 
-    public GameViewManager() {
+    public GameView(int difficulty) {
+        this.difficulty = difficulty;
         initStage();
         createBackground();
         createBucket();
-        createGameElements();
+        createEggs();
+        createGameInfo();
         createKeyListeners();
         randomPosition = new Random();
     }
@@ -78,20 +87,20 @@ public class GameViewManager {
             @Override
             public void handle(KeyEvent keyEvent) {
                 if (keyEvent.getCode() == KeyCode.LEFT) {
-                    System.out.println("LEFT");
+//                    System.out.println("LEFT");
                     isLeftKeyPressed = true;
                 }
                 if (keyEvent.getCode() == KeyCode.RIGHT) {
-                    System.out.println("RIGHT");
+//                    System.out.println("RIGHT");
                     isRightKeyPressed = true;
                 }
                 if (keyEvent.getCode() == KeyCode.UP) {
                     isUpKeyPressed = true;
-                    System.out.println("UP");
+//                    System.out.println("UP");
                 }
                 if (keyEvent.getCode() == KeyCode.DOWN) {
                     isDownKeyPressed = true;
-                    System.out.println("DOWN");
+//                    System.out.println("DOWN");
                 }
             }
         });
@@ -100,20 +109,35 @@ public class GameViewManager {
             @Override
             public void handle(KeyEvent keyEvent) {
                 if (keyEvent.getCode() == KeyCode.LEFT) {
-                    System.out.println("LEFT");
+//                    System.out.println("LEFT");
                     isLeftKeyPressed = false;
                 }
                 if (keyEvent.getCode() == KeyCode.RIGHT) {
-                    System.out.println("RIGHT");
+//                    System.out.println("RIGHT");
                     isRightKeyPressed = false;
                 }
                 if (keyEvent.getCode() == KeyCode.UP) {
+//                    System.out.println("UP");
                     isUpKeyPressed = false;
-                    System.out.println("UP");
                 }
                 if (keyEvent.getCode() == KeyCode.DOWN) {
+//                    System.out.println("DOWN");
                     isDownKeyPressed = false;
-                    System.out.println("DOWN");
+                }
+            }
+        });
+
+        gameScene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
+            public void handle(KeyEvent keyEvent) {
+                KeyCombination keyComb = new KeyCodeCombination(
+                        KeyCode.Q,
+                        KeyCombination.SHIFT_ANY,
+                        KeyCombination.CONTROL_ANY);
+                if (keyComb.match(keyEvent)) {
+                    gameTimer.stop();
+                    gameStage.close();
+                    MenuView.mainStage.show();
+                    keyEvent.consume();
                 }
             }
         });
@@ -124,84 +148,128 @@ public class GameViewManager {
         gameScene = new Scene(gamePane, GAME_WIDTH, GAME_HEIGHT);
         gameStage = new Stage();
         gameStage.setScene(gameScene);
+        gameStage.setResizable(false);
+        gameStage.setTitle("Mickey Mouse - Game");
     }
 
-    public void createNewGame(Stage menuStage, int difficulty) {
-        this.menuStage = menuStage;
-        this.difficulty = difficulty;
-        this.menuStage.hide();
+    public void createNewGame(Stage menuStage) {
+        menuStage.hide();
         createGameLoop();
         gameStage.show();
     }
 
-    public void createGameElements() {
-        eggs = new ImageView[3];
+    public void createEggs() {
+        eggs = new ImageView[this.difficulty];
+
         for (int i = 0; i < eggs.length; i++) {
             eggs[i] = new ImageView(EGG_IMAGE);
-            setNewElementPosition(eggs[i]);
+            setEggStartingPosition(eggs[i]);
             gamePane.getChildren().add(eggs[i]);
         }
     }
 
-    private void setNewElementPosition(ImageView image) {
-        int randomChicken = randomPosition.nextInt(4) + 1;
-        System.out.println(randomChicken);
+    private void createGameInfo() {
+        playerPoints = 0;
+        pointsLabel = new GameLabel(String.valueOf(playerPoints));
+        pointsLabel.setLayoutX(SCREEN_X_END - pointsLabel.getPrefWidth() + 12);
+        pointsLabel.setLayoutY(SCREEN_Y_END - 20);
+        gamePane.getChildren().add(pointsLabel);
 
+        playerLifes = 4;
+        lifes = new ImageView[4];
+
+        for (int i = 0; i < lifes.length; i++) {
+            lifes[i] = new ImageView(HEART_IMAGE);
+            lifes[i].setFitWidth(20);
+            lifes[i].setFitHeight(20);
+            lifes[i].setLayoutX(SCREEN_X_END - 70 + (i * 20));
+            lifes[i].setLayoutY(SCREEN_Y_START + 10);
+            gamePane.getChildren().add(lifes[i]);
+        }
+
+    }
+
+
+    private void setEggStartingPosition(ImageView image) {
+        int randomChicken = randomPosition.nextInt(4) + 1;
+        int random = new Random().nextInt(5);
         switch (randomChicken) {
-            case 1:
-                image.setLayoutX(CHICKEN_1_X);
+            case 1 -> {
+                image.setLayoutX(CHICKEN_1_X+random);
                 image.setLayoutY(CHICKEN_1_Y);
-                break;
-            case 2:
-                image.setLayoutX(CHICKEN_2_X);
+            }
+            case 2 -> {
+                image.setLayoutX(CHICKEN_2_X+random);
                 image.setLayoutY(CHICKEN_2_Y);
-                break;
-            case 3:
-                image.setLayoutX(CHICKEN_3_X);
+            }
+            case 3 -> {
+                image.setLayoutX(CHICKEN_3_X+random);
                 image.setLayoutY(CHICKEN_3_Y);
-                break;
-            case 4:
-                image.setLayoutX(CHICKEN_4_X);
+            }
+            case 4 -> {
+                image.setLayoutX(CHICKEN_4_X+random);
                 image.setLayoutY(CHICKEN_4_Y);
-                break;
-            default:
-                System.out.println("Error in setNewElementPosition() randomChicken number (out of 1-4 range)");
+            }
+            default -> {
+                System.out.println("Error in randomChicken number (out of 1-4 range)");
                 image.setLayoutX(CHICKEN_1_X);
                 image.setLayoutY(CHICKEN_1_Y);
-                break;
+            }
         }
     }
 
     private void moveEggs() {
-        for (int i = 0; i < eggs.length; i++) {
-            eggs[i].setLayoutY(eggs[i].getLayoutY() + 1);
-            eggs[i].setRotate(eggs[i].getRotate() + 7);
-        }
+        for (ImageView egg : eggs) {
+            if (egg.getLayoutX() < GAME_WIDTH / 2) {
+                moveLeftSideEggs(egg);
+            } else {
+                moveRightSideEggs(egg);
 
-//        Ellipse egg = new Ellipse(10, 20);
-//        egg.getStyleClass().add("style.css");
-//
-//        PathTransition pathTransition = new PathTransition(Duration.seconds(5), egg);
-//        Path path = new Path();
-//        path.getElements().add(new MoveTo(100, 100));
-//        path.getElements().add(new LineTo(200, 200));
-//        pathTransition.setNode(egg);
-//        pathTransition.setPath(path);
-//
-//        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(1), egg);
-//        rotateTransition.setFromAngle(0);
-//        rotateTransition.setToAngle(359);
-//
-//        ParallelTransition parallelTransition = new ParallelTransition();
-//        parallelTransition.getChildren().addAll(rotateTransition, pathTransition);
-//        parallelTransition.setCycleCount(Animation.INDEFINITE);
-//        parallelTransition.play();
+            }
+        }
     }
 
-    private void checkIfElementAreBehindAndRelocate() {
-        for (int i = 0; i < eggs.length; i++) {
-            if (eggs[i].getLayoutY() > SCREEN_Y_END) {
-                setNewElementPosition(eggs[i]);
+    private void moveLeftSideEggs(ImageView egg) {
+        if (egg.getLayoutX() > SCREEN_X_START + CHICKEN_WIDTH + 50) {
+            // FALL ->
+            egg.setLayoutX(egg.getLayoutX() + 0.3);
+            egg.setLayoutY(egg.getLayoutY() + 0.45);
+            egg.setRotate(egg.getRotate() + 2);
+        } else if (egg.getLayoutX() > SCREEN_X_START + CHICKEN_WIDTH + 10) {
+            // ROLL SLOPE ->
+            egg.setLayoutX(egg.getLayoutX() + 0.5);
+            egg.setLayoutY(egg.getLayoutY() + 0.4);
+            egg.setRotate(egg.getRotate() + 3);
+        } else {
+            // ROLL FLAT ->
+            egg.setLayoutX(egg.getLayoutX() + 0.2);
+            egg.setRotate(egg.getRotate() + 1);
+        }
+    }
+
+    private void moveRightSideEggs(ImageView egg) {
+        if (egg.getLayoutX() < SCREEN_X_END - CHICKEN_WIDTH - 30) {
+            // FALL <-
+            egg.setLayoutX(egg.getLayoutX() - 0.3);
+            egg.setLayoutY(egg.getLayoutY() + 0.45);
+            egg.setRotate(egg.getRotate() - 2);
+        } else if (egg.getLayoutX() < SCREEN_X_END - CHICKEN_WIDTH + 15) {
+            // ROLL SLOPE <-
+            egg.setLayoutX(egg.getLayoutX() - 0.5);
+            egg.setLayoutY(egg.getLayoutY() + 0.4);
+            egg.setRotate(egg.getRotate() - 3);
+        } else {
+            // ROLL FLAT <-
+            egg.setLayoutX(egg.getLayoutX() - 0.2);
+            egg.setRotate(egg.getRotate() - 1);
+        }
+    }
+
+    private void checkEggIfBroken() {
+        for (ImageView egg : eggs) {
+            if (egg.getLayoutY() > SCREEN_Y_END) {
+                loseLife();
+                setEggStartingPosition(egg);
             }
         }
     }
@@ -218,7 +286,8 @@ public class GameViewManager {
             @Override
             public void handle(long l) {
                 moveEggs();
-                checkIfElementAreBehindAndRelocate();
+                checkEggIfBroken();
+                checkIfEggCatched();
                 moveBucket();
             }
         };
@@ -290,6 +359,34 @@ public class GameViewManager {
         Image background = new Image("gameBackground.jpg", GAME_WIDTH, GAME_HEIGHT, false, true);
         BackgroundImage backgroundImage = new BackgroundImage(background, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, null);
         gamePane.setBackground(new Background(backgroundImage));
+    }
+
+    private void checkIfEggCatched() {
+        for (int i = 0; i < eggs.length; i++) {
+            if (EGG_SIZE + BUCKET_HEIGHT > calculateDistance(
+                    bucket.getLayoutX() + BUCKET_WIDTH / 2,
+                    eggs[i].getLayoutX(),
+                    bucket.getLayoutY() + BUCKET_HEIGHT / 2,
+                    eggs[i].getLayoutY())
+            ) {
+                pointsLabel.setText(String.valueOf(++playerPoints));
+                setEggStartingPosition(eggs[i]);
+            }
+        }
+    }
+
+    private void loseLife() {
+        gamePane.getChildren().remove(lifes[playerLifes - 1]);
+        playerLifes--;
+        System.out.println(playerLifes);
+        if (playerLifes <= 0) {
+            gameTimer.stop();
+            new GameOver(gameStage, playerPoints);
+        }
+    }
+
+    private double calculateDistance(double x1, double x2, double y1, double y2) {
+        return Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
     }
 
 }
