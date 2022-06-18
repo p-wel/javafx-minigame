@@ -54,9 +54,18 @@ public class GameViewManager {
     private boolean isDownKeyPressed;
     private AnimationTimer gameTimer;
 
-    private final static String EGG_IMAGE = "egg16px.png";
+    private final static String EGG_IMAGE = "egg.png";
 
+    private GameLabel pointsLabel;
+    private ImageView[] lifesImage;
     private ImageView[] eggs;
+    private int playerLifes;
+    private int playerPoints;
+
+    private final static String HEART_IMAGE = "heart.png";
+    private final static String HEART_BROKEN_IMAGE = "heart_broken.png";
+
+
     private Random randomPosition = new Random();
 
     public GameViewManager(int difficulty) {
@@ -65,6 +74,7 @@ public class GameViewManager {
         createBackground();
         createBucket();
         createEggs();
+        createGameInfo();
         createKeyListeners();
         randomPosition = new Random();
     }
@@ -138,6 +148,28 @@ public class GameViewManager {
             gamePane.getChildren().add(eggs[i]);
         }
     }
+
+    private void createGameInfo() {
+        playerPoints = 0;
+        pointsLabel = new GameLabel(String.valueOf(playerPoints));
+        pointsLabel.setLayoutX(SCREEN_X_END - pointsLabel.getPrefWidth()+12);
+        pointsLabel.setLayoutY(SCREEN_Y_END - 20);
+        gamePane.getChildren().add(pointsLabel);
+
+        playerLifes = 3;
+        lifesImage = new ImageView[3];
+
+        for (int i = 0; i < lifesImage.length; i++) {
+            lifesImage[i] = new ImageView(HEART_IMAGE);
+            lifesImage[i].setFitWidth(20);
+            lifesImage[i].setFitHeight(20);
+            lifesImage[i].setLayoutX(SCREEN_X_END - 50 + (i * 20));
+            lifesImage[i].setLayoutY(SCREEN_Y_START + 10);
+            gamePane.getChildren().add(lifesImage[i]);
+        }
+
+    }
+
 
     private void setEggStartingPosition(ImageView image) {
         int randomChicken = randomPosition.nextInt(4) + 1;
@@ -240,14 +272,14 @@ public class GameViewManager {
     private void moveLeftSideEggs(ImageView egg) {
         if (egg.getLayoutX() > SCREEN_X_START + CHICKEN_WIDTH + 50) {
             // FALL ->
-            egg.setLayoutX(egg.getLayoutX() + 0.4);
+            egg.setLayoutX(egg.getLayoutX() + 0.3);
             egg.setLayoutY(egg.getLayoutY() + 0.45);
             egg.setRotate(egg.getRotate() + 2);
         } else if (egg.getLayoutX() > SCREEN_X_START + CHICKEN_WIDTH + 10) {
             // ROLL SLOPE ->
             egg.setLayoutX(egg.getLayoutX() + 0.5);
             egg.setLayoutY(egg.getLayoutY() + 0.4);
-            egg.setRotate(egg.getRotate() + 5);
+            egg.setRotate(egg.getRotate() + 3);
         } else {
             // ROLL FLAT ->
             egg.setLayoutX(egg.getLayoutX() + 0.2);
@@ -258,15 +290,15 @@ public class GameViewManager {
     private void moveRightSideEggs(ImageView egg) {
         if (egg.getLayoutX() < SCREEN_X_END - CHICKEN_WIDTH - 30) {
             // FALL <-
-            egg.setLayoutX(egg.getLayoutX() - 0.4);
+            egg.setLayoutX(egg.getLayoutX() - 0.3);
             egg.setLayoutY(egg.getLayoutY() + 0.45);
             egg.setRotate(egg.getRotate() - 2);
-        } else if (egg.getLayoutX() < SCREEN_X_END - CHICKEN_WIDTH +15){
+        } else if (egg.getLayoutX() < SCREEN_X_END - CHICKEN_WIDTH + 15) {
             // ROLL SLOPE <-
             egg.setLayoutX(egg.getLayoutX() - 0.5);
             egg.setLayoutY(egg.getLayoutY() + 0.4);
-            egg.setRotate(egg.getRotate() - 5);
-        }else{
+            egg.setRotate(egg.getRotate() - 3);
+        } else {
             // ROLL FLAT <-
             egg.setLayoutX(egg.getLayoutX() - 0.2);
             egg.setRotate(egg.getRotate() - 1);

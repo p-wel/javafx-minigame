@@ -6,6 +6,17 @@
     -fx-background-size: 50px 50px;
 }
 
+.label {
+    -fx-font-family: "fantasy";
+    -fx-font-size: 20;
+    -fx-text-fill: red;
+    -fx-alignment: center;
+    -fx-background-image: url('label.png');
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: 80px 50px;
+}
+
 /*.shape {*/
 /*    -fx-background-color: transparent;*/
 /*    -fx-background-image: url('bucket.png');*/
