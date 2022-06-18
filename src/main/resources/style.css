@@ -5,3 +5,11 @@
     -fx-background-position: center;
     -fx-background-size: 50px 50px;
 }
+
+.shape {
+    -fx-background-color: transparent;
+    -fx-background-image: url('bucket.png');
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-size: 50px 50px;
+}
