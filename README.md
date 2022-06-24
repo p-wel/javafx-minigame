@@ -2,4 +2,4 @@
 
 MiniGame for JavaFX practise \
 \
-Ready to play, eggjoy! :egg:
+Ready to play, eggjoy! 🍳
