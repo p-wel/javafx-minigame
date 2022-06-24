@@ -1,6 +1,7 @@
 # MiniGame_JavaFX
 
-MiniGame for JavaFX practise \\
+MiniGame for JavaFX practise \
+\
 Ready to play, eggjoy! \
 &nbsp; &nbsp; &nbsp; :egg: \
 &nbsp; :egg: :egg: :egg: \
