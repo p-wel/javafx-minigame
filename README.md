@@ -1,9 +1,17 @@
 # MiniGame_JavaFX
 
-MiniGame for JavaFX practise <br /> <br />
-Ready to play, eggjoy! <br />
-&ensp; &nbsp; &nbsp; :egg: <br />
-&ensp; &nbsp; :egg: :egg::egg: <br />
-:egg: :egg::egg::egg::egg: <br />
-&ensp; &nbsp; :egg: :egg: :egg: <br />
-&ensp; &nbsp; &nbsp; :egg: <br />
+MiniGame for JavaFX practise \\
+Ready to play, eggjoy! \
+&nbsp; &nbsp; :egg: \
+&nbsp; :egg: :egg::egg: \
+:egg: :egg::egg::egg::egg: \
+&nbsp; :egg: :egg: :egg: 
+&nbsp; &nbsp; :egg: \
+
+
+
+1. &nbsp;
+2. &ensp;
+3. -
+4. &emsp;
+4 = TAB &nbsp;
