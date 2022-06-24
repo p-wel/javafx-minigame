@@ -3,11 +3,12 @@
 MiniGame for JavaFX practise \
 \
 Ready to play, eggjoy! \
-&nbsp; &nbsp; &nbsp; :egg: \
-&nbsp; :egg: :egg: :egg: \
+
+&nbsp; &nbsp; &nbsp; &nbsp; :egg: \
+&nbsp; &nbsp; :egg: :egg: :egg: \
 :egg: :egg: :egg: :egg: \
-&nbsp; :egg: :egg: :egg: \
-&nbsp; &nbsp; &nbsp; :egg: \
+&nbsp; &nbsp; :egg: :egg: :egg: \
+&nbsp; &nbsp; &nbsp; &nbsp; :egg: \
 
 
 
