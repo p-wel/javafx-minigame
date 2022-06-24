@@ -7,7 +7,7 @@ Ready to play, eggjoy!
 &nbsp; &nbsp; &nbsp;:egg: \
 &nbsp; :egg: :egg: \
 :egg: :egg: :egg:\
-&nbsp;:egg: :egg:\
+&nbsp; :egg: :egg:\
 &nbsp; &nbsp; &nbsp;:egg:
 
 
