@@ -30,6 +30,10 @@ public class MenuView {
     private Scene mainScene;
     public static Stage mainStage;
 
+    private final static int DIFFICULTY_EASY = 2;
+    private final static int DIFFICULTY_MEDIUM = 5;
+    private final static int DIFFICULTY_HARD = 10;
+
     private final static int MENU_BUTTONS_START_X = 405;
     private final static int MENU_BUTTONS_START_Y = 225;
     private final String FONT_PATH = "src/main/resources/kenvector_future.ttf";
@@ -148,7 +152,7 @@ public class MenuView {
         easyButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                GameView gameView = new GameView(1);
+                GameView gameView = new GameView(DIFFICULTY_EASY);
                 gameView.createNewGame(mainStage);
             }
         });
@@ -164,7 +168,7 @@ public class MenuView {
         mediumButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                GameView gameView = new GameView(2);
+                GameView gameView = new GameView(DIFFICULTY_MEDIUM);
                 gameView.createNewGame(mainStage);
             }
         });
@@ -180,7 +184,7 @@ public class MenuView {
         hardButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                GameView gameView = new GameView(3);
+                GameView gameView = new GameView(DIFFICULTY_HARD);
                 gameView.createNewGame(mainStage);
             }
         });
