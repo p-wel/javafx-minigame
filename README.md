@@ -1,6 +1,6 @@
 # MiniGame_JavaFX
 
-Little app for JavaFX practice
+Mini app for JavaFX practice
 
 Ready to play, eggjoy! :egg:
 
