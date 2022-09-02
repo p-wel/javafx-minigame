@@ -98,7 +98,7 @@ public class MenuView {
     }
 
     private void createPlayButton() {
-        MenuButton playButton = new MenuButton("PLAY");
+        MenuButton playButton = new MenuButton("_PLAY");
         addMenuButton(playButton);
 
         playButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -113,7 +113,7 @@ public class MenuView {
     }
 
     private void createHighScoresButton() {
-        MenuButton highScoresButton = new MenuButton("HIGH SCORES");
+        MenuButton highScoresButton = new MenuButton("_HIGH SCORES");
         addMenuButton(highScoresButton);
 
         highScoresButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -127,7 +127,7 @@ public class MenuView {
     }
 
     private void createExitButton() {
-        MenuButton exitButton = new MenuButton("EXIT");
+        MenuButton exitButton = new MenuButton("E_XIT");
         addMenuButton(exitButton);
 
         exitButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -145,7 +145,7 @@ public class MenuView {
     }
 
     private MenuButton createEasyButton() {
-        MenuButton easyButton = new MenuButton("EASY");
+        MenuButton easyButton = new MenuButton("_EASY");
         easyButton.setLayoutX(60);
         easyButton.setLayoutY(25);
 
@@ -161,7 +161,7 @@ public class MenuView {
     }
 
     private MenuButton createMediumButton() {
-        MenuButton mediumButton = new MenuButton("MEDIUM");
+        MenuButton mediumButton = new MenuButton("_MEDIUM");
         mediumButton.setLayoutX(60);
         mediumButton.setLayoutY(25 + mediumButton.getPrefHeight());
 
@@ -177,7 +177,7 @@ public class MenuView {
     }
 
     private MenuButton createHardButton() {
-        MenuButton hardButton = new MenuButton("HARD");
+        MenuButton hardButton = new MenuButton("_HARD");
         hardButton.setLayoutX(60);
         hardButton.setLayoutY(25 + hardButton.getPrefHeight() * 2);
 
@@ -209,6 +209,7 @@ public class MenuView {
         Animation animation = new Transition() {
             {
                 setCycleDuration(Duration.seconds(3));
+                setDelay(Duration.millis(3000));
             }
 
             @Override

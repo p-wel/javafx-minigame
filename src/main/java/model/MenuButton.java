@@ -23,6 +23,7 @@ public class MenuButton extends Button {
         setPrefHeight(49);
         setStyle(BUTTON_FREE_STYLE);
         initButtonListeners();
+        setMnemonicParsing(true);
     }
 
     private void setButtonFont() {
