@@ -1,4 +1,4 @@
-# javadx_minigame
+# javafx_minigame
 
 First JavaFX app for practice
 
